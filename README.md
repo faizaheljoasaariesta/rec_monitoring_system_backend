@@ -1,3 +1,7 @@
+# Architecture Web Apps REC Monitoring System
+
+![Architecture Project](./public/images/architecture.png)
+
 # Setup Mini PC/NAS
 
 ```
@@ -37,6 +41,16 @@ SECRET_KEY=""
 
 # Configuration Express
 PORT=
+
+# Setup Mailer
+EMAIL_USER=
+EMAIL_APP_PASSWORD=
+
+# Setup Connection to Microsoft SQL Database
+SERVER_NAME=
+DATABASE_NAME=
+USERNAME=
+PASSWORD=
 ```
 
 # Procedure to use Database PostgreSQL
