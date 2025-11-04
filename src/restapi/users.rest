@@ -1,0 +1,48 @@
+### Register User
+POST http://localhost:3000/api/register
+Content-Type: application/json
+
+{
+  "name": "Faizahel Joasa Ariesta",
+  "email": "faizaheljoasaariesta@mail.ugm.ac.id",
+  "password": "131313",
+  "confirmPassword": "131313"
+}
+
+### Verify User
+POST http://localhost:3000/api/verify
+Content-Type: application/json
+
+{
+  "email": "faizaheljoasaariesta@mail.ugm.ac.id",
+  "code": "942665"
+}
+
+### Login User
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+  "username": "faizaheljoasaariesta@mail.ugm.ac.id",
+  "password": "131313"
+}
+
+### Update User
+PUT http://localhost:9000/api/update/f037abba-91ff-40bc-856c-289fcca86dc2
+Content-Type: application/json
+
+{
+  "phone": "08994983040"
+}
+
+### Delete User
+DELETE http://localhost:9000/api/delete/6c6dbc50-6c73-4300-8196-f1dc7db3b089
+Content-Type: application/json
+
+### Get All User
+GET http://localhost:9000/api/users
+Content-Type: application/json
+
+### Get User
+GET http://localhost:9000/api/user/fa8a855d-6983-48e0-ac1f-87a380f00ad7
+Content-Type: application/json

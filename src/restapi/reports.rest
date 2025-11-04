@@ -1,0 +1,7 @@
+### Get AA Reports
+GET http://localhost:3000/api/reports/aa?startDate=2025-10-01&endDate=2025-10-31
+Content-Type: application/json
+
+### Get Latest AA Data
+GET http://localhost:3000/api/reports/aa/latest
+Content-Type: application/json
