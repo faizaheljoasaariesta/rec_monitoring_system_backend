@@ -1,7 +1,69 @@
-### Get AA Reports
-GET http://localhost:3000/api/reports/aa?startDate=2025-10-01&endDate=2025-10-31
+### Get All Product No AA Reports
+GET http://localhost:3000/api/aa-iot/product
+
+### Get All Operator No AA Reports
+GET http://localhost:3000/api/aa-iot/operator
+
+
+
+--------------------------------------- All Report Product -----------------------------------------
+
+### Get Latest AA Reports (10)
+GET http://localhost:3000/api/aa-iot/latest
 Content-Type: application/json
 
-### Get Latest AA Data
-GET http://localhost:3000/api/reports/aa/latest
+### Get AA Reports by Date & Product No
+GET http://localhost:3000/api/aa-iot/filter?start=2025-10-01&end=2025-10-31&product=AFM331G5X30
+Content-Type: application/json
+
+### Get AA Reports by Item "FOCUS_ANALYTICS_1"
+GET http://localhost:3000/api/aa-iot/filter?item=FOCUS_ANALYTICS_1
+
+
+
+
+---------------------------------------- Summary Report -------------------------------------------
+
+### Get AA Summary
+GET http://localhost:3000/api/aa-iot/summary
+Content-Type: application/json
+
+### Get AA Summary by Date
+GET http://localhost:3000/api/aa-iot/summary?start=2025-10-01&end=2025-10-31
+Content-Type: application/json
+
+### Get AA Summary by Product No
+GET http://localhost:3000/api/aa-iot/summary?product=AFM331G5X30
+
+
+
+
+----------------------------------------- Daily Report --------------------------------------------
+
+### Get AA Daily Summary
+GET http://localhost:3000/api/aa-iot/summary/daily
+Content-Type: application/json
+
+### Get AA Daily Summary by Date
+GET http://localhost:3000/api/aa-iot/summary/daily?start=2025-10-16&end=2025-10-30&product=AFM331G5X30
+Content-Type: application/json
+
+### Get AA Daily Summary by Product No
+GET http://localhost:3000/api/aa-iot/summary/daily?product=AFM331G5X30
+
+
+
+
+---------------------------------------- Operator Report ------------------------------------------
+
+### Get Operator Report
+GET http://localhost:3000/api/aa-iot/summary/operator
+Content-Type: application/json
+
+### Get Operator Report by Date
+GET http://localhost:3000/api/aa-iot/summary/operator?start=2025-10-01&end=2025-10-31
+Content-Type: application/json
+
+### Get Operator Report by Product No
+GET http://localhost:3000/api/aa-iot/summary/operator?product=AFM531
 Content-Type: application/json
