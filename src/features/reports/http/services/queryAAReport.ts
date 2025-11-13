@@ -57,7 +57,7 @@ export const getFilteredAAData = async (startDate?: string, endDate?: string, pr
     const conditions: string[] = [];
 
     if (startDate && endDate) {
-      conditions.push(`TEST_DATETIME BETWEEN '${startDate}' AND '${endDate}'`);
+      conditions.push(`TEST_DATETIME >= '${startDate}' AND TEST_DATETIME < DATEADD(DAY, 1, '${endDate}')`);
     }
     if (product) {
       conditions.push(`PRODUCT_NO LIKE '%${product}%'`);
@@ -69,7 +69,7 @@ export const getFilteredAAData = async (startDate?: string, endDate?: string, pr
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const query = `
-      SELECT TOP 100
+      SELECT TOP 500
         LOG_ID,
         EMP_NO,
         PRODUCT_NO,
@@ -100,7 +100,7 @@ export const getAAReportSummary = async (startDate?: string, endDate?: string, p
     const conditions: string[] = [];
 
     if (startDate && endDate) {
-      conditions.push(`TEST_DATETIME BETWEEN '${startDate}' AND '${endDate}'`);
+      conditions.push(`TEST_DATETIME >= '${startDate}' AND TEST_DATETIME < DATEADD(DAY, 1, '${endDate}')`);
     }
     if (product) {
       conditions.push(`PRODUCT_NO LIKE '%${product}%'`);
@@ -135,7 +135,8 @@ export const getAAReportDailySummary = async (startDate?: string, endDate?: stri
     const conditions: string[] = [];
 
     if (startDate && endDate) {
-      conditions.push(`TEST_DATETIME BETWEEN '${startDate}' AND '${endDate}'`);
+      conditions.push(`TEST_DATETIME >= '${startDate}' AND TEST_DATETIME < DATEADD(DAY, 1, '${endDate}')`);
+      console.log(startDate, endDate)
     }
     if (product) {
       conditions.push(`PRODUCT_NO LIKE '%${product}%'`);
@@ -157,8 +158,8 @@ export const getAAReportDailySummary = async (startDate?: string, endDate?: stri
     `;
 
     const result = await request.query(query);
+    console.log(result);
     return result.recordset;
-
   } catch (err) {
     console.error("Error fetching AA daily summary:", err);
     throw err;
@@ -173,7 +174,7 @@ export const getAAReportOperatorSummary = async (startDate?: string, endDate?: s
     const conditions: string[] = [];
 
     if (startDate && endDate) {
-      conditions.push(`TEST_DATETIME BETWEEN '${startDate}' AND '${endDate}'`);
+      conditions.push(`TEST_DATETIME >= '${startDate}' AND TEST_DATETIME < DATEADD(DAY, 1, '${endDate}')`);
     }
     if (product) {
       conditions.push(`PRODUCT_NO LIKE '%${product}%'`);
