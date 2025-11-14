@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { 
+  getAllProduct,
   getAllProductNumbers,
   getAllOperatorNumbers,
   getLatestAAData, 
@@ -17,6 +18,26 @@ export const getAllOperatorNumbersController = async (req: Request, res: Respons
     res.status(500).json({
       success: false,
       message: "Error fetching latest AA data",
+      error: err.message
+    });
+  }
+};
+
+export const getAllProductController = async (req: Request, res: Response) => {
+  try {
+    const product = await getAllProduct();
+    res.status(200).json({
+      status: 'success',
+      code: 200,
+      message: 'Get all product success.',
+      data: { product },
+    });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: "Error to get all product",
       error: err.message
     });
   }

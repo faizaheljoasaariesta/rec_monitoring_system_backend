@@ -1,5 +1,55 @@
 import { sql, connect } from "../../../../utils/databases/mssqlConnection";
 
+export const getAllProduct = async () => {
+  try {
+    const pool = await connect();
+    const result = await pool.request().query(`
+      WITH ProductStats AS (
+          SELECT 
+              PRODUCT_NO,
+              COUNT(*) AS TotalTest,
+              SUM(CASE WHEN TEST_RESULT LIKE 'OK%' THEN 1 ELSE 0 END) AS TotalOK
+          FROM [dbo].[RG_AA_IOT]
+          GROUP BY PRODUCT_NO
+      ),
+
+      LastTest AS (
+          SELECT 
+              t.PRODUCT_NO,
+              t.TRAVEL_CARD_NUMBER,
+              t.LOG_ID,
+              t.EMP_NO,
+              t.CREATE_DATETIME,
+              t.TEST_RESULT,
+              ROW_NUMBER() OVER (PARTITION BY t.PRODUCT_NO ORDER BY t.CREATE_DATETIME DESC) AS rn
+          FROM [dbo].[RG_AA_IOT] t
+      )
+
+      SELECT 
+          lt.PRODUCT_NO AS ProductNo,
+          lt.TRAVEL_CARD_NUMBER AS TravelCard,
+          lt.LOG_ID AS SerialNo,
+          lt.EMP_NO AS Operator,
+          lt.CREATE_DATETIME AS LastTestDatetime,
+
+          CASE 
+              WHEN (CAST(ps.TotalOK AS FLOAT) / ps.TotalTest) >= 0.9 THEN 'OK'
+              ELSE 'NG'
+          END AS Result
+      FROM LastTest lt
+      INNER JOIN ProductStats ps ON lt.PRODUCT_NO = ps.PRODUCT_NO
+      WHERE lt.rn = 1
+      ORDER BY lt.PRODUCT_NO;
+    `);
+
+    return result.recordset;
+
+  } catch (err) {
+    console.error("Error fetching all product:", err);
+    throw err;
+  }
+};
+
 export const getAllProductNumbers = async () => {
   try {
     const pool = await connect();
@@ -207,3 +257,4 @@ export const getAAReportOperatorSummary = async (startDate?: string, endDate?: s
     throw err;
   }
 };
+

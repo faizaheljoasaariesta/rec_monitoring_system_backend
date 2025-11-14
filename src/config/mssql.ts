@@ -14,6 +14,15 @@ const mssql_config = {
     encrypt: true,
     enableArithAbort: true,
     trustServerCertificate: true,
+  },
+
+  connectionTimeout: 30000,  // 30 detik
+  requestTimeout: 30000,     // 30 detik
+  cancelTimeout: 30000,      // 30 detik
+  pool: {
+    max: 10,
+    min: 0,
+    idleTimeoutMillis: 30000
   }
 };
 

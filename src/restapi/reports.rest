@@ -1,4 +1,7 @@
 ### Get All Product No AA Reports
+GET http://localhost:3000/api/aa-iot/product-list
+
+### Get All Product No AA Reports
 GET http://localhost:3000/api/aa-iot/product
 
 ### Get All Operator No AA Reports
