@@ -1,15 +1,15 @@
-import { 
-  SERVER_NAME,
-  DATABASE_NAME,
-  USERNAME,
-  PASSWORD
-} from './env';
+// import { 
+//   SERVER_NAME,
+//   DATABASE_NAME,
+//   USERNAME,
+//   PASSWORD
+// } from './env';
 
 const mssql_config = {
-  server: SERVER_NAME,
-  database: DATABASE_NAME,
-  user: USERNAME,
-  password: PASSWORD,
+  server: '192.168.2.250',
+  database: 'REC_DB',
+  user: 'sa',
+  password: 'Rg54013657',
   options: {
     encrypt: false,
     enableArithAbort: true,
@@ -20,9 +20,9 @@ const mssql_config = {
     }
   },
 
-  connectionTimeout: 30000,
-  requestTimeout: 30000,
-  cancelTimeout: 30000,
+  connectionTimeout: 30000,  // 30 detik
+  requestTimeout: 30000,     // 30 detik
+  cancelTimeout: 30000,      // 30 detik
   pool: {
     max: 10,
     min: 0,
