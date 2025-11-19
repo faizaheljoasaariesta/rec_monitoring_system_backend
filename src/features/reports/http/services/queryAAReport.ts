@@ -1,4 +1,4 @@
-import { sql, connect } from "../../../../utils/databases/mssqlConnection";
+import { connect } from "../../../../utils/databases/mssqlConnection";
 
 export const getAllProduct = async () => {
   try {
@@ -119,7 +119,7 @@ export const getFilteredAAData = async (startDate?: string, endDate?: string, pr
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
     const query = `
-      SELECT TOP 500
+      SELECT TOP 100
         LOG_ID,
         EMP_NO,
         PRODUCT_NO,
@@ -186,7 +186,6 @@ export const getAAReportDailySummary = async (startDate?: string, endDate?: stri
 
     if (startDate && endDate) {
       conditions.push(`TEST_DATETIME >= '${startDate}' AND TEST_DATETIME < DATEADD(DAY, 1, '${endDate}')`);
-      console.log(startDate, endDate)
     }
     if (product) {
       conditions.push(`PRODUCT_NO LIKE '%${product}%'`);
@@ -208,7 +207,6 @@ export const getAAReportDailySummary = async (startDate?: string, endDate?: stri
     `;
 
     const result = await request.query(query);
-    console.log(result);
     return result.recordset;
   } catch (err) {
     console.error("Error fetching AA daily summary:", err);

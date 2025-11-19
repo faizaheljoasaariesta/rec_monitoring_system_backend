@@ -1,6 +1,9 @@
 # Node modules
 node_modules/
 
+# Folder
+public/
+
 # Environment files
 .env
 .env.*.local
