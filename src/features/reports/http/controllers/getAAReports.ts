@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { format } from "date-fns";
 import { 
   getAllProduct,
   getAllProductNumbers,
@@ -7,7 +8,8 @@ import {
   getFilteredAAData,
   getAAReportSummary,
   getAAReportDailySummary,
-  getAAReportOperatorSummary
+  getAAReportOperatorSummary,
+  getDailyAnalytic
 } from "../services/queryAAReport";
 
 export const getAllOperatorNumbersController = async (req: Request, res: Response) => {
@@ -173,3 +175,37 @@ export const getAAReportOperatorSummaryController = async (req: Request, res: Re
     });
   }
 };
+
+export const getDailyAnalyticController = async (req: Request, res: Response) => {
+  try {
+    const { start, end } = req.query;
+
+    const formatDate = (date: Date) => format(date, "yyyy-MM-dd HH:mm:ss");
+
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const startDate = start ? String(start) : formatDate(yesterday);
+    const endDate = end ? String(end) : formatDate(today);
+
+    const analytic = await getDailyAnalytic(startDate, endDate);
+
+    res.status(200).json({
+      status: 'success',
+      code: 200,
+      message: `Get analytic data success!`,
+      data: { 
+        date: {startDate, endDate},
+        analytic,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      statue: 'error',
+      code: 500,
+      message: "Error fatching daily analytic for AA_IQT!",
+      error: err.message
+    });
+  }
+}

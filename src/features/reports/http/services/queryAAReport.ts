@@ -1,4 +1,362 @@
 import { connect } from "../../../../utils/databases/mssqlConnection";
+import { runQuery } from "./runQuery";
+
+export const getDailyAnalytic = async (start: string, end: string) => {
+  return runQuery(async (pool) => {
+    const result = await pool
+    .request()
+    .input("start", start)
+    .input("end", end)
+    .query(`
+      DECLARE @today DATETIME = CAST(@end AS DATETIME);
+      DECLARE @yesterday DATETIME = CAST(@start AS DATETIME);
+      DECLARE @date1 DATETIME = DATEADD(DAY, -365, @today);
+      DECLARE @date2 DATETIME = @today;
+
+      WITH F1 AS(
+      SELECT
+          LOG_ID,
+          PRODUCT_NO,
+          EMP_NO,
+          CASE
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 12, 11)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 13, 11)
+          END AS SN,
+          CASE 
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 1, 1)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 2, 2)
+          END AS MACHINE_ID,
+          TEST_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME
+      FROM
+          [REC_DB].[dbo].[RG_AA_IOT]
+      WHERE
+          TEST_DATETIME BETWEEN @date1 AND @date2
+          AND LOG_FILENAME NOT LIKE '%999%'
+          AND (PRODUCT_NO LIKE 'AFM531%' OR PRODUCT_NO LIKE 'AFM331%') AND PRODUCT_NO NOT LIKE 'AFM624%'
+          AND TEST_ITEM = 'FOCUS_ANALYTICS_1'
+      ),
+      F2 AS(
+      SELECT
+          LOG_ID,
+          PRODUCT_NO,
+          EMP_NO,
+          CASE
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 12, 11)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 13, 11)
+          END AS SN,
+          CASE 
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 1, 1)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 2, 2)
+          END AS MACHINE_ID,
+          TEST_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME
+      FROM
+          [REC_DB].[dbo].[RG_AA_IOT]
+      WHERE
+          TEST_DATETIME BETWEEN @date1 AND @date2
+          AND LOG_FILENAME NOT LIKE '%999%'
+          AND (PRODUCT_NO LIKE 'AFM531%' OR PRODUCT_NO LIKE 'AFM331%') AND PRODUCT_NO NOT LIKE 'AFM624%'
+          AND TEST_ITEM = 'FOCUS_ANALYTICS_2'
+      ),
+      F3 AS(
+      SELECT
+          LOG_ID,
+          PRODUCT_NO,
+          EMP_NO,
+          CASE
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 12, 11)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 13, 11)
+          END AS SN,
+          CASE 
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 1, 1)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 2, 2)
+          END AS MACHINE_ID,
+          TEST_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME
+      FROM
+          [REC_DB].[dbo].[RG_AA_IOT]
+      WHERE
+          TEST_DATETIME BETWEEN @date1 AND @date2
+          AND LOG_FILENAME NOT LIKE '%999%'
+          AND (PRODUCT_NO LIKE 'AFM531%' OR PRODUCT_NO LIKE 'AFM331%') AND PRODUCT_NO NOT LIKE 'AFM624%'
+          AND TEST_ITEM = 'FOCUS_ANALYTICS_3'
+      ),
+      F4 AS(
+      SELECT
+          LOG_ID,
+          PRODUCT_NO,
+          EMP_NO,
+          CASE
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 12, 11)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 13, 11)
+          END AS SN,
+          CASE 
+              WHEN LEN(LOG_FILENAME) = 16 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 1, 1)
+              WHEN LEN(LOG_FILENAME) = 17 THEN SUBSTRING(LOG_FILENAME, CHARINDEX('.', LOG_FILENAME) - 2, 2)
+          END AS MACHINE_ID,
+          TEST_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME
+      FROM
+          [REC_DB].[dbo].[RG_AA_IOT]
+      WHERE
+          TEST_DATETIME BETWEEN @date1 AND @date2
+          AND LOG_FILENAME NOT LIKE '%999%'
+          AND (PRODUCT_NO LIKE 'AFM531%' OR PRODUCT_NO LIKE 'AFM331%') AND PRODUCT_NO NOT LIKE 'AFM624%'
+          AND TEST_ITEM = 'FOCUS_ANALYTICS_4'
+      ),
+      JOIN_TABLE AS(
+      SELECT
+          F1.LOG_ID AS LOG_ID_1,
+          F2.LOG_ID AS LOG_ID_2,
+          F3.LOG_ID AS LOG_ID_3,
+          F4.LOG_ID AS LOG_ID_4,
+          F1.EMP_NO,
+          F1.PRODUCT_NO AS PRODUCT_NO,
+          F1.SN AS SN,
+          F1.MACHINE_ID AS MACHINE_ID,
+          F1.TEST_RESULT AS F1_RESULT,
+          F2.TEST_RESULT AS F2_RESULT,
+          F3.TEST_RESULT AS F3_RESULT,
+          F4.TEST_RESULT AS F4_RESULT,
+          F1.CREATE_DATETIME,
+          F1.TEST_DATETIME
+      FROM F1
+      LEFT JOIN F2 ON 
+          F1.SN = F2.SN 
+          AND F1.MACHINE_ID = F2.MACHINE_ID
+          AND F1.TEST_DATETIME = F2.TEST_DATETIME
+          AND abs(F2.LOG_ID-F1.LOG_ID) < 5
+      LEFT JOIN F3 ON
+          F1.SN = F3.SN 
+          AND F1.MACHINE_ID = F3.MACHINE_ID
+          AND F1.TEST_DATETIME = F3.TEST_DATETIME
+          AND abs(F3.LOG_ID-F2.LOG_ID) < 5
+      LEFT JOIN F4 ON
+          F1.SN = F4.SN 
+          AND F1.MACHINE_ID = F4.MACHINE_ID
+          AND F1.TEST_DATETIME = F4.TEST_DATETIME
+          AND abs(F4.LOG_ID-F3.LOG_ID) < 5
+      ),
+      OK_TABLE AS(
+      SELECT
+          EMP_NO,
+          LOG_ID_1,
+          LOG_ID_2,
+          LOG_ID_3,
+          LOG_ID_4,
+          PRODUCT_NO,
+          SN,
+          MACHINE_ID,
+          F1_RESULT,
+          F2_RESULT,
+          F3_RESULT,
+          F4_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME,
+          ROW_NUMBER() OVER (PARTITION BY SN ORDER BY LOG_ID_1 DESC) AS RowNum
+      FROM 
+          JOIN_TABLE
+      WHERE
+          (F1_RESULT LIKE '%OK%' AND F2_RESULT LIKE '%OK%' AND F3_RESULT LIKE '%OK%' AND F4_RESULT LIKE '%OK%' )
+          OR(F1_RESULT LIKE '%OK%' AND F2_RESULT LIKE '%OK%' AND F3_RESULT LIKE '%OK%' AND (MACHINE_ID = 5 OR MACHINE_ID = 7))
+      ),
+      NG_TABLE AS(
+      SELECT
+          EMP_NO,
+          LOG_ID_1,
+          LOG_ID_2,
+          LOG_ID_3,
+          LOG_ID_4,
+          PRODUCT_NO,
+          SN,
+          MACHINE_ID,
+          F1_RESULT,
+          F2_RESULT,
+          F3_RESULT,
+          F4_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME,
+          ROW_NUMBER() OVER (PARTITION BY SN ORDER BY LOG_ID_1 DESC) AS RowNum
+      FROM 
+          JOIN_TABLE
+      WHERE
+          F1_RESULT LIKE '%NG%' OR F2_RESULT LIKE '%NG%' OR F3_RESULT LIKE '%NG%' OR F4_RESULT LIKE '%NG%'
+      ),
+      ALL_TABLE AS(
+      SELECT
+          EMP_NO,
+          LOG_ID_1,
+          LOG_ID_2,
+          LOG_ID_3,
+          LOG_ID_4,
+          PRODUCT_NO,
+          SN,
+          MACHINE_ID,
+          F1_RESULT,
+          F2_RESULT,
+          F3_RESULT,
+          F4_RESULT,
+          CREATE_DATETIME,
+          TEST_DATETIME,
+          ROW_NUMBER() OVER (PARTITION BY SN ORDER BY LOG_ID_1 DESC) AS RowNum
+      FROM 
+          JOIN_TABLE
+      ),
+      OK_PRODUCT_LIST AS (
+      SELECT
+          SN,
+          MACHINE_ID
+      FROM OK_TABLE
+      WHERE 
+          RowNum = 1
+      ),
+      OK_PRODUCT_LIST_DAILY AS (
+      SELECT
+          SN,
+          MACHINE_ID
+      FROM OK_TABLE
+      WHERE 
+          RowNum = 1
+          AND TEST_DATETIME BETWEEN @yesterday AND @today
+      ),
+      --NG_PRODUCT_LIST AS (
+      --SELECT 
+      --	SN,
+      --	MACHINE_ID
+      --FROM NG_TABLE
+      --WHERE 
+      --	RowNum = 1
+      --	AND NG_TABLE.SN NOT IN (SELECT OK_PRODUCT_LIST.SN FROM OK_PRODUCT_LIST)
+      --),
+
+      NG_PRODUCT_LIST AS (
+      SELECT 
+          NG.SN,
+          NG.MACHINE_ID
+      FROM 
+          NG_TABLE NG
+      LEFT JOIN 
+          OK_PRODUCT_LIST OK
+      ON 
+          NG.SN = OK.SN
+      WHERE 
+          NG.RowNum = 1
+          AND OK.SN IS NULL
+      ),
+      NG_PRODUCT_LIST_DAILY AS (
+      SELECT 
+          NG.SN,
+          NG.MACHINE_ID
+      FROM 
+          NG_TABLE NG
+      LEFT JOIN 
+          OK_PRODUCT_LIST OK
+      ON 
+          NG.SN = OK.SN
+      WHERE 
+          NG.RowNum = 1
+          AND OK.SN IS NULL
+          AND TEST_DATETIME BETWEEN @yesterday AND @today 
+      ),
+
+      RETRY_COUNT AS (
+      SELECT 
+          MACHINE_ID,
+          SUM(RowNum-1) AS COUNTS
+      FROM 
+          (
+          SELECT *, 
+              ROW_NUMBER() OVER (PARTITION BY SN ORDER BY RowNum DESC) AS rn
+          FROM ALL_TABLE
+          ) AS subquery
+      WHERE rn = 1
+      GROUP BY MACHINE_ID
+      ),
+
+      OK_COUNT AS(
+      SELECT 
+          MACHINE_ID, COUNT(*) AS COUNTS
+      FROM 
+          OK_PRODUCT_LIST
+      GROUP BY MACHINE_ID
+      ),
+
+      NG_COUNT AS(
+      SELECT 
+          MACHINE_ID, COUNT(*) AS COUNTS
+      FROM 
+          NG_PRODUCT_LIST
+      GROUP BY MACHINE_ID
+      ),
+
+      OK_COUNT_DAILY AS(
+      SELECT 
+          MACHINE_ID, COUNT(*) AS COUNTS
+      FROM 
+          OK_PRODUCT_LIST_DAILY
+      GROUP BY MACHINE_ID
+      ),
+
+      NG_COUNT_DAILY AS(
+      SELECT 
+          MACHINE_ID, COUNT(*) AS COUNTS
+      FROM 
+          NG_PRODUCT_LIST_DAILY
+      GROUP BY MACHINE_ID
+      ),
+
+      RETRY_COUNT_DAILY AS (
+      SELECT 
+          MACHINE_ID,
+          SUM(RowNum-1) AS COUNTS
+      FROM 
+          (
+          SELECT *, 
+              ROW_NUMBER() OVER (PARTITION BY SN ORDER BY RowNum DESC) AS rn
+          FROM ALL_TABLE
+          ) AS subquery
+      WHERE
+          TEST_DATETIME BETWEEN @yesterday AND　@today and rn = 1
+      GROUP BY MACHINE_ID
+      )
+
+      -- Main Search
+      SELECT 
+          OK_COUNT.MACHINE_ID,
+          ISNULL(OK_COUNT_DAILY.COUNTS, 0) AS OK,
+          ISNULL(NG_COUNT_DAILY.COUNTS, 0) AS NG,
+          ISNULL(RETRY_COUNT_DAILY.COUNTS, 0) AS RETRY,
+          ISNULL(OK_COUNT.COUNTS, 0) AS OK_YEAR,
+          ISNULL(NG_COUNT.COUNTS, 0) AS NG_YEAR,
+          ISNULL(RETRY_COUNT.COUNTS, 0) AS RETRY_YEAR
+
+      FROM OK_COUNT
+      LEFT JOIN NG_COUNT ON
+          OK_COUNT.MACHINE_ID = NG_COUNT.MACHINE_ID
+
+      LEFT JOIN RETRY_COUNT ON
+          OK_COUNT.MACHINE_ID = RETRY_COUNT.MACHINE_ID
+
+      LEFT JOIN OK_COUNT_DAILY ON
+          OK_COUNT.MACHINE_ID = OK_COUNT_DAILY.MACHINE_ID
+
+      LEFT JOIN NG_COUNT_DAILY ON
+          OK_COUNT.MACHINE_ID = NG_COUNT_DAILY.MACHINE_ID
+
+      LEFT JOIN RETRY_COUNT_DAILY ON
+          OK_COUNT.MACHINE_ID = RETRY_COUNT_DAILY.MACHINE_ID
+      WHERE OK_COUNT.MACHINE_ID!=0
+      ORDER BY CAST(OK_COUNT.MACHINE_ID AS INT)
+    `)
+
+    return result.recordset;
+  });
+};
 
 export const getAllProduct = async () => {
   try {

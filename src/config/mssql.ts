@@ -1,32 +1,32 @@
-// import { 
-//   SERVER_NAME,
-//   DATABASE_NAME,
-//   USERNAME,
-//   PASSWORD
-// } from './env';
+import { 
+  SERVER_NAME,
+  DATABASE_NAME,
+  USERNAME,
+  PASSWORD
+} from './env';
 
 const mssql_config = {
-  server: '192.168.2.250',
-  database: 'REC_DB',
-  user: 'sa',
-  password: 'Rg54013657',
+  server: SERVER_NAME,
+  database: DATABASE_NAME,
+  user: USERNAME,
+  password: PASSWORD,
   options: {
     encrypt: false,
     enableArithAbort: true,
     trustServerCertificate: true,
-    useUTC: true,
-    cryptoCredentialsDetails: {
-      minVersion: 'TLSv1'
-    }
+    // useUTC: true,
+    // cryptoCredentialsDetails: {
+    //   minVersion: 'TLSv1'
+    // }
   },
 
-  connectionTimeout: 30000,  // 30 detik
-  requestTimeout: 30000,     // 30 detik
-  cancelTimeout: 30000,      // 30 detik
+  connectionTimeout: 90000,
+  requestTimeout: 90000,
+  cancelTimeout: 90000,
   pool: {
     max: 10,
     min: 0,
-    idleTimeoutMillis: 30000
+    idleTimeoutMillis: 90000
   }
 };
 

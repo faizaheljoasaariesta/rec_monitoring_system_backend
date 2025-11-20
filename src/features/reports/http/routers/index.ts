@@ -8,6 +8,7 @@ import {
   getAAReportSummaryController,
   getAAReportDailySummaryController,
   getAAReportOperatorSummaryController,
+  getDailyAnalyticController,
 } from "../controllers/getAAReports";
 
 const reports_routes = Router();
@@ -20,5 +21,6 @@ reports_routes.get("/aa-iot/filter", getFilteredAADataController);
 reports_routes.get("/aa-iot/summary", getAAReportSummaryController);
 reports_routes.get("/aa-iot/summary/daily", getAAReportDailySummaryController);
 reports_routes.get("/aa-iot/summary/operator", getAAReportOperatorSummaryController);
+reports_routes.get("/aa-iot/analytic", getDailyAnalyticController);
 
 export default reports_routes;
